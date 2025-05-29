@@ -1,8 +1,9 @@
-#3. 다음에 대해서 무지게 사각형을 코딩하고 테스트한 후에 초보자를 위한 사용 설명서를 작성하시오.
-1.Bulkan
-![실습](./Vulkan%20실습.png)
-<summary>코드 펼치기/접기</summary>
+<h3>3. 다음에 대해서 무지게 사각형을 코딩하고 테스트한 후에 초보자를 위한 사용 설명서를 작성하시오.</h2>
 
+<h2>1.Bulkan</h2>
+
+
+![실습](./Vulkan%20실습.png)
 
 <details>
 <summary>코드 펼치기/접기</summary>
@@ -928,8 +929,82 @@ int main() {
 }
 ```
 </details>
+<h3>1. 개발 환경 준비</h3>
 
-2.WebGL
+
+Vulkan SDK 설치 (LunarG에서 제공)
+
+GLFW 라이브러리 설치 (창 생성 및 입력 처리)
+
+C++ 컴파일러 준비 (Visual Studio, GCC 등)
+
+<h3>2. 코드 구조 개요</h3>
+
+코드는 HelloTriangleApplication 클래스로 감싸져 있으며, 주요 실행 흐름은 다음과 같습니다.
+
+run() → 초기화(initWindow, initVulkan), 메인 루프(mainLoop), 정리(cleanup)
+
+
+주요 단계별 설명
+<li>1. 윈도우 생성</li>
+GLFW를 사용해 800x600 크기의 창을 생성합니다.
+Vulkan 렌더링을 위해 OpenGL 컨텍스트는 사용하지 않습니다.
+
+<li>2. Vulkan 인스턴스 생성</li>
+Vulkan 인스턴스(VkInstance)는 애플리케이션과 Vulkan 드라이버 간의 연결을 담당합니다.
+사용 가능한 레이어(디버깅 등)와 확장(extension)을 지정합니다.
+
+<li>3. 디버그 메시지 설정 (선택 사항)</li>
+디버깅을 위해 VK_LAYER_KHRONOS_validation 레이어와 디버그 콜백을 등록할 수 있습니다.
+
+<li>4. 창 표면(surface) 생성</li>
+GLFW를 이용해 Vulkan이 그릴 수 있는 창 표면(VkSurfaceKHR)을 만듭니다.
+
+<li>5. 물리적 장치(그래픽카드) 선택</li>
+시스템에 연결된 모든 GPU를 나열하고, Vulkan을 지원하며 swapchain, queue family 등이 조건을 만족하는 장치를 선택합니다.
+
+<li>6. 논리적 장치 및 큐 생성</li>
+선택한 물리적 장치에서 실제로 명령을 실행할 논리적 장치(VkDevice)를 생성합니다.
+그래픽 작업 및 화면 표시를 위한 큐(VkQueue)를 가져옵니다.
+
+<li>7. 스왑체인(swapchain) 생성</li>
+스왑체인은 렌더링 결과를 화면에 표시하기 위한 이미지 버퍼들의 집합입니다.
+
+지원 포맷, 프레젠트 모드, 이미지 개수 등을 결정합니다.
+
+<li>8. 이미지 뷰 및 프레임버퍼 생성</li>
+각 스왑체인 이미지를 참조할 수 있도록 이미지 뷰(VkImageView)를 생성합니다.
+
+렌더링 결과를 저장할 프레임버퍼(VkFramebuffer)를 생성합니다.
+
+<li>9. 렌더 패스(render pass) 생성</li>
+렌더링 작업의 흐름과 이미지 포맷, 클리어 방법 등을 정의합니다.
+
+<li>10. 그래픽스 파이프라인 생성</li>
+셰이더(vert.spv, frag.spv)와 고정 기능 상태(입력, 래스터라이저, 블렌딩 등)를 조합해 파이프라인을 만듭니다.
+
+파이프라인은 렌더링에 필요한 모든 GPU 상태를 캡슐화합니다.
+
+<li>11. 커맨드 풀 및 커맨드 버퍼 생성</li>
+커맨드 풀(VkCommandPool)에서 커맨드 버퍼(VkCommandBuffer)를 할당합니다.
+
+커맨드 버퍼에 실제 그리기 명령을 기록합니다.
+
+<li>12. 동기화 객체 생성</li>
+세마포어(semaphore)와 펜스(fence)를 사용해 GPU와 CPU, 프레임 간 동기화를 관리합니다.
+
+<li>13. 메인 루프</li>
+창이 닫힐 때까지 반복하며, 각 프레임마다:
+
+이미지 획득 → 커맨드 버퍼 기록 → 제출 → 화면에 표시
+
+동기화 객체로 프레임 간 충돌 방지
+
+<li>14. 리소스 해제</li>
+생성한 모든 Vulkan 객체와 GLFW 창을 안전하게 해제합니다.
+
+<h2>2.WebGL</h2>
+
 
 ![실습](./WebGL%20실습.png)
 
@@ -1029,7 +1104,60 @@ int main() {
 ```
 </details>
 
-3.WebGPU
+<h3>1. Three.js 기본 세팅</h3>
+Scene:3D 오브젝트, 조명 등이 들어가는 공간
+Camera:3D 장면을 바라보는 시점
+Renderer:실제로 화면에 그림을 그리는 객체
+Mesh:geometry(모양) + material(재질)
+Shader:GPU에서 동작하는 미니 프로그램(효과 담당)
+=>scene: 3D 오브젝트와 조명 등이 들어가는 공간(무대)입니다.,camera: 3D 장면을 바라보는 카메라. 시야각, 비율, 거리 설정이 가능합니다.,renderer: 실제로 화면에 그림을 그려주는 역할. 크기와 배경색을 설정합니다.
+
+<h3>2. 큐브 만들기</h3>
+const geometry = new THREE.BoxGeometry(2,2,2);
+=>큐브의 형태(2x2x2 크기)를 정의합니다.
+
+<h3>3. 무지개 색상 셰이더 재질</h3>
+const material = new THREE.ShaderMaterial({
+  vertexShader: `...`,
+  fragmentShader: `...`
+});
+=>ShaderMaterial은 직접 셰이더 코드를 써서 특별한 효과를 줄 수 있는 재질입니다.
+
+vertexShader: 각 꼭짓점의 위치와 UV 좌표를 계산합니다.
+
+fragmentShader: 픽셀마다 무지개 색을 계산해서 입힙니다.
+
+<h3>4. 큐브 장면에 추가</h3>
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+=>geometry(모양)와 material(재질)을 합쳐서 Mesh(3D 오브젝트)를 만들고, scene에 추가합니다.
+
+<h3>5. 큐브 회전</h3>
+cube.rotation.x = Math.PI / 4;
+cube.rotation.y = Math.PI / 4;
+=>x, y축으로 45도씩 회전시켜 입체감 있게 보이도록 합니다.
+
+<h3>6. 조명 추가</h3>
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 5, 5);
+scene.add(light);
+const ambientLight = new THREE.AmbientLight(0x404040);
+scene.add(ambientLight);
+=>DirectionalLight: 태양빛처럼 한 방향에서 비추는 조명,AmbientLight: 전체적으로 부드러운 빛을 더해 어둡지 않게 만듭니다.
+
+<h3>7. 카메라 위치</h3>
+camera.position.set(0, 0, 5);
+=>카메라를 큐브 앞쪽(0,0,5)에 위치시킵니다.
+
+<h3>8. 애니메이션 루프</h3>
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();
+=>animate() 함수가 계속 반복 호출되어, 장면을 계속 그려줍니다.
+
+<h2>3.WebGPU</h2>
 
 ![실습](./WebGPU%20실습.png)
 
@@ -1131,5 +1259,43 @@ int main() {
 
 ```
 </details>
+
+<h3>1.코드의 역할</h3>
+
+<li>위의 코드는 최신 웹 그래픽 기술(WebGPU)과 Three.js로 무지개 색 큐브를 만듭니다.
+큐브는 자동으로 빙글빙글 돌고, 마우스로 돌려볼 수도 있습니다.</li>
+
+
+<h3>2.주요 코드 흐름</h3>
+
+WebGPU 지원 확인
+<li>최신 브라우저(크롬, 엣지 등)에서만 동작!</li>
+
+렌더러, 장면, 카메라 만들기
+<li>3D 공간과 시점 설정</li>
+
+무지개 색 큐브 만들기
+<li>큐브의 꼭짓점마다 무지개 색을 입힘</li>
+
+
+조명 추가
+<li>밝은 방향광, 부드러운 주변광</li>
+
+
+<h3>3.실행 방법</h3>
+<li>코드를 .html 파일로 저장</li>
+<li>최신 크롬/엣지에서 열기</li>
+<li>무지개 큐브가 나오면 성공!</li>
+<li>애니메이션</li>
+<li>큐브가 계속 회전, 마우스로 시점 조절 가능</li>
+
+
+
+
+
+
+
+
+
 
 
